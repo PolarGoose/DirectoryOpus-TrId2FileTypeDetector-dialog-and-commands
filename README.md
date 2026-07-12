@@ -1,6 +1,9 @@
 # DirectoryOpus-TrId2FileTypeDetector-dialog-and-commands
-The plugin that uses [DOpus-Scripting-Extensions Trid2FileTypeDetector](https://github.com/PolarGoose/DOpus-Scripting-Extensions#trid2filetypedetector) COM class to:
+The plugin that uses [DOpus-Scripting-Extensions](https://github.com/PolarGoose/DOpus-Scripting-Extensions) to:
 * Show a dialog with file type information
+  * Mime type and encoding from [FileMimeTypeDetector](https://github.com/PolarGoose/DOpus-Scripting-Extensions#filemimetypedetector)
+  * Encoding from [UCharDet](https://github.com/PolarGoose/DOpus-Scripting-Extensions#UCharDet)
+  * File type candidates using [TrId2FileTypeDetector](https://github.com/PolarGoose/DOpus-Scripting-Extensions#trid2filetypedetector)
 * Provide a command to fix the file extension
 
 # How to install the script
@@ -29,4 +32,6 @@ You can use it from the `User Commands` menu and create a custom user command:
 @noprogress
 TrId2FileTypeDetector_OpenDialog FILE {filepath}
 ```
-<img src="doc/dialog_screenshot.png" width="70%" />
+### GUI dialog screenshots
+<img src="doc/dialog_screenshot_binary_file.png" width="40%" />
+<img src="doc/dialog_screenshot_text_file.png" width="40%" />
