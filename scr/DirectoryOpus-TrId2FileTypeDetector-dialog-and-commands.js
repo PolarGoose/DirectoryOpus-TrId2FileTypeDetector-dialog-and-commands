@@ -6,7 +6,7 @@ function /* void */ OnInit(/* ScriptInitData */ data) {
   data.name = "DirectoryOpus-TrId2FileTypeDetector-dialog-and-commands"
   data.desc = "Dialog to show file type information based on the content of the file. A command to fix or add file name extension based on the file type"
   data.default_enable = true
-  data.version = "2.0"
+  data.version = "3.0"
   data.url = "https://github.com/PolarGoose/DirectoryOpus-FileLockingInfo-columns-and-dialog"
 
   data.config.debug = false
@@ -27,7 +27,7 @@ function /* void */ OnInit(/* ScriptInitData */ data) {
   cmd.label = "TrId2FileTypeDetector dialog"
 }
 
-function /* void */ onFixFileExtension(/* ScriptCommandData */ scriptCommandData) {
+function /* int */ onFixFileExtension(/* ScriptCommandData */ scriptCommandData) {
   try {
     var args = scriptCommandData.func.args
 
@@ -35,9 +35,15 @@ function /* void */ onFixFileExtension(/* ScriptCommandData */ scriptCommandData
       throw "FILE argument is not provided"
     }
 
+    if (DOpus.FSUtil.GetItem(args.file).is_dir) {
+      debug("File is a directory: '" + args.file + "'")
+      return 1
+    }
+
     var res = new VBArray(trId2FileTypeDetector.DetectFileType(args.file, 1)).toArray()
     if (res.length == 0) {
-      throw "No file type detected"
+      debug("No file type detected for file: '" + args.file + "'")
+      return 1
     }
 
     debug("Detected file type: '" + res[0].Name + "'")
@@ -60,7 +66,7 @@ function /* void */ onFixFileExtension(/* ScriptCommandData */ scriptCommandData
 
     if (path.ext == extension) {
       debug("Extension is already correct: " + String(path))
-      return
+      return 1
     }
 
     path.ext = extension
@@ -75,6 +81,8 @@ function /* void */ onFixFileExtension(/* ScriptCommandData */ scriptCommandData
   } catch (error) {
     showErrorDialog(String(error))
   }
+
+  return 1
 }
 
 function onOpenDialog(/* ScriptCommandData */ scriptCommandData) {
@@ -100,7 +108,7 @@ function onOpenDialog(/* ScriptCommandData */ scriptCommandData) {
 
     for (var i = 0; i < trId2Candidates.length; i++) {
       addItemToListView(listView, "#" + (i + 1), trId2Candidates[i].Name, /* bold */ true)
-      addItemToListView(listView, "Probability", trId2Candidates[i].Probability.toFixed(1).replace(".", ",") + "%", /* bold */ false)
+      addItemToListView(listView, "Probability", trId2Candidates[i].Probability.toFixed(1) + "%", /* bold */ false)
       addItemToListView(listView, "Description", trId2Candidates[i].Description, /* bold */ false)
       addItemToListView(listView, "Extensions", new VBArray(trId2Candidates[i].FileNameExtensions).toArray().join(", "), /* bold */ false)
       addItemToListView(listView, "MimeType", trId2Candidates[i].MimeType, /* bold */ false)
